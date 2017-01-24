@@ -191,7 +191,7 @@ if __name__ == "__main__":
             if label != '':
                 snp_file.write('/dca/' + str(dca + 1) + '/config/name "' + label + '"\n')
                 snp_file.write('/dca/' + str(dca + 1) + '/config/color GN\n')
-            elif WARN_DCAS && labelbelow != '':
+            elif WARN_DCAS and labelbelow != '':
                 snp_file.write('/dca/' + str(dca + 1) + '/config/name "' + labelbelow + '"\n')
                 snp_file.write('/dca/' + str(dca + 1) + '/config/color RD\n')
             else:
