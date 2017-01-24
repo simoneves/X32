@@ -58,7 +58,12 @@ NUM_AUXINS      = 6      # number of contiguous set of auxins (2 = AuxIn 5-6)
 FIRST_DCA_COL   = 32     # spreadsheet column of data for first DCA
 NUM_DCAS        = 8      # number of DCAs
 
+# Craig Flint functionality
 WARN_DCAS       = False  # show next cue's active DCAs in red?
+
+# STC Urinetown functionality
+UT_FX           = True   # negative path DCA indexes mean also un-mute that path's FX send to the bus below
+UT_FX_BUS       = '14'   # set the send from the paths to this FX bus (zero-padded number as string)
 
 ################################################################################
 # Functions
@@ -78,7 +83,7 @@ def ods_cell(d, r, c):
     except:
         return ''
 
-def process_paths(ods, snp_file, row_index, first_path, first_path_col, num_paths, osc_prefix):
+def process_paths(ods, snp_file, row_index, first_path, first_path_col, num_paths, osc_prefix, path_type_is_channel):
 
     # general function to process paths of any of the three types
 
@@ -101,7 +106,7 @@ def process_paths(ods, snp_file, row_index, first_path, first_path_col, num_path
         dca = str(ods_cell(ods, row_index, path + first_path_col))
         bitmap = 0
         if dca != '':
-            bitmap = 1 << (int(float(dca)) - 1)
+            bitmap = 1 << (abs(int(float(dca))) - 1)
         else:
             bitmap = 0
         snp_file.write('/' + osc_prefix + '/' + str(path + first_path).zfill(2) + '/grp/dca ' + str(bitmap) + '\n')
@@ -110,6 +115,20 @@ def process_paths(ods, snp_file, row_index, first_path, first_path_col, num_path
     for path in range(0, num_paths):
         if not mutes[path]:
             snp_file.write('/' + osc_prefix + '/' + str(path + first_path).zfill(2) + '/mix/on ON\n')
+			
+    # Urinetown
+    # for channels only, also control the mute of the given FX bus send for this path
+    if UT_FX and path_type_is_channel:
+        for path in range(0, num_paths):
+            dca = str(ods_cell(ods, row_index, path + first_path_col))
+            fx_on = False
+            if dca != '':
+                fx_on = int(float(dca)) < 0
+            if fx_on:
+                print "DEBUG: activating FX send on channel " + str(path + first_path)
+                snp_file.write('/' + osc_prefix + '/' + str(path + first_path).zfill(2) + '/mix/' + UT_FX_BUS + ' ON\n')
+            else:
+                snp_file.write('/' + osc_prefix + '/' + str(path + first_path).zfill(2) + '/mix/' + UT_FX_BUS + ' OFF\n')
 
 
 ################################################################################
@@ -176,13 +195,13 @@ if __name__ == "__main__":
         snp_file.write('#2.1# "' + cue + '" 0 0 0 0 0\n')
         
         # process channels
-        process_paths(ods, snp_file, row_index, FIRST_CHAN, FIRST_CHAN_COL, NUM_CHANS, 'ch')
+        process_paths(ods, snp_file, row_index, FIRST_CHAN, FIRST_CHAN_COL, NUM_CHANS, 'ch', True)
 
         # process buses
-        process_paths(ods, snp_file, row_index, FIRST_BUS, FIRST_BUS_COL, NUM_BUSES, 'bus')
+        process_paths(ods, snp_file, row_index, FIRST_BUS, FIRST_BUS_COL, NUM_BUSES, 'bus', False)
 
         # process auxins
-        process_paths(ods, snp_file, row_index, FIRST_AUXIN, FIRST_AUXIN_COL, NUM_AUXINS, 'auxin')
+        process_paths(ods, snp_file, row_index, FIRST_AUXIN, FIRST_AUXIN_COL, NUM_AUXINS, 'auxin', False)
 
         # finally we write out the new DCA labels
         for dca in range(0, NUM_DCAS):
