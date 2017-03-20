@@ -18,7 +18,7 @@
 #
 ################################################################################
 
-VERSION = "1.3"
+VERSION = "1.3.1"
 
 ################################################################################
 # Imports
@@ -38,32 +38,35 @@ from pyexcel_ods import get_data
 
 SHEET_NAME      = "Sheet1" # spreadsheet sub-sheet name containing all data
 
-SKIP_ROWS       = 2      # number of spreadsheet rows to skip before extracting data
+SKIP_ROWS       = 4      # number of spreadsheet rows to skip before extracting data
 
-SNIPPET_COL     = 0      # spreadsheet column of snippet index data (must be monotonically incrementing integers)
-CUE_COL         = 1      # spreadsheet column of cue data (any short string)
+SNIPPET_COL     = 2      # spreadsheet column of snippet index data (must be monotonically incrementing integers)
+CUE_COL         = 3      # spreadsheet column of cue data (any short string)
 
 FIRST_CHAN      = 1      # number of first physical channel to control
-FIRST_CHAN_COL  = 2      # spreadsheet column of data for that first channel
-NUM_CHANS       = 23     # number of contiguous set of channels
+FIRST_CHAN_COL  = 4      # spreadsheet column of data for that first channel
+NUM_CHANS       = 14     # number of contiguous set of channels
 
 FIRST_BUS       = 0      # number of first physical bus to control (13 = FX1)
 FIRST_BUS_COL   = 0      # spreadsheet column of data for that first bus
 NUM_BUSES       = 0      # number of contiguous set of buses (4 = FX1-4)
 
-FIRST_AUXIN     = 1      # number of first physical auxin to control (5 = AuxIn 5)
-FIRST_AUXIN_COL = 25     # spreadsheet column of data for that first auxin
-NUM_AUXINS      = 6      # number of contiguous set of auxins (2 = AuxIn 5-6)
+FIRST_AUXIN     = 0      # number of first physical auxin to control (5 = AuxIn 5)
+FIRST_AUXIN_COL = 0      # spreadsheet column of data for that first auxin
+NUM_AUXINS      = 0      # number of contiguous set of auxins (2 = AuxIn 5-6)
 
-FIRST_DCA_COL   = 32     # spreadsheet column of data for first DCA
+FIRST_DCA_COL   = 19     # spreadsheet column of data for first DCA
 NUM_DCAS        = 8      # number of DCAs
 
 # Craig Flint functionality
 WARN_DCAS       = False  # show next cue's active DCAs in red?
 
 # STC Urinetown functionality
-UT_FX           = True   # negative path DCA indexes mean also un-mute that path's FX send to the bus below
+UT_FX           = False  # negative path DCA indexes mean also un-mute that path's FX send to the bus below
 UT_FX_BUS       = '14'   # set the send from the paths to this FX bus (zero-padded number as string)
+
+DCA_COLOR       = 'WH'   # color for active DCA labels
+WARN_COLOR      = 'RD'   # color for warning DCA labels (if WARN_DCAS)
 
 ################################################################################
 # Functions
@@ -209,10 +212,10 @@ if __name__ == "__main__":
             labelbelow = str(ods_cell(ods, row_index + 1, dca + FIRST_DCA_COL))
             if label != '':
                 snp_file.write('/dca/' + str(dca + 1) + '/config/name "' + label + '"\n')
-                snp_file.write('/dca/' + str(dca + 1) + '/config/color GN\n')
+                snp_file.write('/dca/' + str(dca + 1) + '/config/color ' + DCA_COLOR + '\n')
             elif WARN_DCAS and labelbelow != '':
                 snp_file.write('/dca/' + str(dca + 1) + '/config/name "' + labelbelow + '"\n')
-                snp_file.write('/dca/' + str(dca + 1) + '/config/color RD\n')
+                snp_file.write('/dca/' + str(dca + 1) + '/config/color ' + WARN_COLOR + '\n')
             else:
                 snp_file.write('/dca/' + str(dca + 1) + '/config/name ""\n')
                 snp_file.write('/dca/' + str(dca + 1) + '/config/color OFF\n')
