@@ -24,8 +24,8 @@ This is the default name of an OpenOffice spreadsheet document, as displayed in 
 SKIP_ROWS
 How many rows from the top to skip before attempting to interpret the spreadsheet contents
 
-SNIPPET_COL / CUE_COL
-The column numbers (starting from zero!) of the columns from which to pull the snippet number and the label string
+CUE_NUM_COL / CUE_LABEL_COL
+The column numbers (starting from zero!) of the columns from which to pull the cue number and the cue label string
 
 FIRST_CHAN / NUM_CHANS
 The first console channel to control (usually 1), and the number of channels to control (inclusive)
