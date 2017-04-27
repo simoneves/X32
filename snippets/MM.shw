@@ -1,0 +1,66 @@
+#2.6#
+show "MM" 0 0 0 0 0 0 0 0 0 0 "X32-Edit 3.00"
+cue/000 100 "PRE" 0 -1 0 0 1 0 0
+cue/001 200 "I-1" 0 -1 1 0 1 0 0
+cue/002 300 "Stranger" 0 -1 2 0 1 0 0
+cue/003 400 "I-2" 0 -1 3 0 1 0 0
+cue/004 500 "Marcellus" 0 -1 4 0 1 0 0
+cue/005 600 "Trouble" 0 -1 5 0 1 0 0
+cue/006 700 "I-3" 0 -1 6 0 1 0 0
+cue/007 800 "I-4" 0 -1 7 0 1 0 0
+cue/008 900 "I-5" 0 -1 8 0 1 0 0
+cue/009 1000 "Dunlap" 0 -1 9 0 1 0 0
+cue/010 1100 "Trouble R" 0 -1 10 0 1 0 0
+cue/011 1200 "76 PO" 0 -1 11 0 1 0 0
+cue/012 1300 "T+Z Exit" 0 -1 12 0 1 0 0
+cue/013 1400 "I-6" 0 -1 13 0 1 0 0
+cue/014 1500 "Ladies" 0 -1 14 0 1 0 0
+cue/015 1600 "Q Enter" 0 -1 15 0 1 0 0
+cue/016 1700 "I-7" 0 -1 16 0 1 0 0
+cue/017 1800 "I-8" 0 -1 17 0 1 0 0
+cue/018 1900 "I-10" 0 -1 18 0 1 0 0
+cue/019 2000 "I-11" 0 -1 19 0 1 0 0
+cue/020 2100 "Shinns" 0 -1 20 0 1 0 0
+cue/021 2200 "INT" 0 -1 21 0 1 0 0
+cue/022 2300 "II-1" 0 -1 22 0 1 0 0
+cue/023 2400 "Ship PO" 0 -1 23 0 1 0 0
+cue/024 2500 "Ladies" 0 -1 24 0 1 0 0
+cue/025 2600 "II-2" 0 -1 25 0 1 0 0
+cue/026 2700 "II-3" 0 -1 26 0 1 0 0
+cue/027 2800 "II-4" 0 -1 27 0 1 0 0
+cue/028 2900 "II-6" 0 -1 28 0 1 0 0
+cue/029 3000 "Chase" 0 -1 29 0 1 0 0
+cue/030 3100 "II-7" 0 -1 30 0 1 0 0
+cue/031 3200 "END" 0 -1 31 0 1 0 0
+snippet/000 "PRE" 0 0 0 0 1
+snippet/001 "I-1" 0 0 0 0 1
+snippet/002 "Stranger" 0 0 0 0 1
+snippet/003 "I-2" 0 0 0 0 1
+snippet/004 "Marcellus" 0 0 0 0 1
+snippet/005 "Trouble" 0 0 0 0 1
+snippet/006 "I-3" 0 0 0 0 1
+snippet/007 "I-4" 0 0 0 0 1
+snippet/008 "I-5" 0 0 0 0 1
+snippet/009 "Dunlap" 0 0 0 0 1
+snippet/010 "Trouble R" 0 0 0 0 1
+snippet/011 "76 PO" 0 0 0 0 1
+snippet/012 "T+Z Exit" 0 0 0 0 1
+snippet/013 "I-6" 0 0 0 0 1
+snippet/014 "Ladies" 0 0 0 0 1
+snippet/015 "Q Enter" 0 0 0 0 1
+snippet/016 "I-7" 0 0 0 0 1
+snippet/017 "I-8" 0 0 0 0 1
+snippet/018 "I-10" 0 0 0 0 1
+snippet/019 "I-11" 0 0 0 0 1
+snippet/020 "Shinns" 0 0 0 0 1
+snippet/021 "INT" 0 0 0 0 1
+snippet/022 "II-1" 0 0 0 0 1
+snippet/023 "Ship PO" 0 0 0 0 1
+snippet/024 "Ladies" 0 0 0 0 1
+snippet/025 "II-2" 0 0 0 0 1
+snippet/026 "II-3" 0 0 0 0 1
+snippet/027 "II-4" 0 0 0 0 1
+snippet/028 "II-6" 0 0 0 0 1
+snippet/029 "Chase" 0 0 0 0 1
+snippet/030 "II-7" 0 0 0 0 1
+snippet/031 "END" 0 0 0 0 1
