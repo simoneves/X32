@@ -5,7 +5,7 @@
 # X32 Snippets
 #
 # Last mod:
-# April 27, 2017
+# May 10, 2017
 #
 # Written by:
 # Simon Eves (simon@eves.us)
@@ -19,7 +19,7 @@
 #
 ################################################################################
 
-VERSION = "1.4"
+VERSION = "1.5 Beta 1"
 
 ################################################################################
 # Imports
@@ -37,36 +37,40 @@ from pyexcel_ods import get_data
 # Set these appropriately for your source spreadsheet layout
 ################################################################################
 
-SHEET_NAME      = "Sheet1" # spreadsheet sub-sheet name containing all data
+SHEET_NAME             = "Sheet1" # spreadsheet sub-sheet name containing all data
 
-SKIP_ROWS       = 5      # number of spreadsheet rows to skip before extracting data
+SKIP_ROWS              = 5      # number of spreadsheet rows to skip before extracting data
 
-CUE_NUM_COL     = 0      # spreadsheet column of snippet index data (must be monotonically incrementing integers)
-CUE_LABEL_COL   = 1      # spreadsheet column of cue data (any short string)
+CUE_NUM_COL            = 0      # spreadsheet column of snippet index data (must be monotonically incrementing integers)
+CUE_LABEL_COL          = 1      # spreadsheet column of cue data (any short string)
 
-FIRST_CHAN      = 1      # number of first physical channel to control
-FIRST_CHAN_COL  = 4      # spreadsheet column of data for that first channel
-NUM_CHANS       = 21     # number of contiguous set of channels
+FIRST_CHAN             = 1      # number of first physical channel to control
+FIRST_CHAN_COL         = 4      # spreadsheet column of data for that first channel
+NUM_CHANS              = 21     # number of contiguous set of channels
 
-FIRST_BUS       = 0      # number of first physical bus to control (13 = FX1)
-FIRST_BUS_COL   = 0      # spreadsheet column of data for that first bus
-NUM_BUSES       = 0      # number of contiguous set of buses (4 = FX1-4)
+FIRST_BUS              = 0      # number of first physical bus to control (13 = FX1)
+FIRST_BUS_COL          = 0      # spreadsheet column of data for that first bus
+NUM_BUSES              = 0      # number of contiguous set of buses (4 = FX1-4)
 
-FIRST_AUXIN     = 0      # number of first physical auxin to control (5 = AuxIn 5)
-FIRST_AUXIN_COL = 0      # spreadsheet column of data for that first auxin
-NUM_AUXINS      = 0      # number of contiguous set of auxins (2 = AuxIn 5-6)
+FIRST_AUXIN            = 0      # number of first physical auxin to control (5 = AuxIn 5)
+FIRST_AUXIN_COL        = 0      # spreadsheet column of data for that first auxin
+NUM_AUXINS             = 0      # number of contiguous set of auxins (2 = AuxIn 5-6)
 
-FIRST_DCA_COL   = 26     # spreadsheet column of data for first DCA
-NUM_DCAS        = 8      # number of DCAs
-DCA_COLOR       = 'WH'   # color for active DCA labels
+FIRST_DCA_COL          = 26     # spreadsheet column of data for first DCA
+NUM_DCAS               = 8      # number of DCAs
+DCA_COLOR              = 'WH'   # color for active DCA labels
 
-# Craig Flint functionality
-CF_WARN_DCAS    = False  # show next cue's active DCAs in red?
-CF_WARN_COLOR   = 'RD'   # color for warning DCA labels (if WARN_DCAS)
+# Craig Flint warn upcoming DCAs
+CF_WARN_DCAS           = False  # show next cue's active DCAs in red?
+CF_WARN_COLOR          = 'RD'   # color for warning DCA labels (if WARN_DCAS)
 
-# STC functionality
-STC_FX          = False  # negative path DCA indexes mean also un-mute that path's FX send to the bus below
-STC_FX_BUS      = '14'   # set the send from the paths to this FX bus (zero-padded number as string)
+# Craig Flint name channels
+CF_NAME_CHANS          = False  # set channel names
+CF_FIRST_CHAN_NAME_COL = 35     # spreadsheet column of name for the first channel
+
+# STC FX send automation
+STC_FX                 = False  # negative path DCA indexes mean also un-mute that path's FX send to the bus below
+STC_FX_BUS             = '14'   # set the send from the paths to this FX bus (zero-padded number as string)
 
 
 ################################################################################
@@ -87,7 +91,7 @@ def ods_cell(d, r, c):
     except:
         return ''
 
-def process_paths(ods, snp_file, row_index, first_path, first_path_col, num_paths, osc_prefix, path_type_is_channel):
+def process_paths(ods, snp_file, row_index, first_path, first_path_col, num_paths, osc_prefix):
 
     # general function to process paths of any of the three types
 
@@ -119,21 +123,7 @@ def process_paths(ods, snp_file, row_index, first_path, first_path_col, num_path
     for path in range(0, num_paths):
         if not mutes[path]:
             snp_file.write('/' + osc_prefix + '/' + str(path + first_path).zfill(2) + '/mix/on ON\n')
-			
-    # STC
-    # for channels only, also control the mute of the given FX bus send for this path
-    if STC_FX and path_type_is_channel:
-        for path in range(0, num_paths):
-            dca = ods_cell(ods, row_index, path + first_path_col)
-            fx_on = False
-            if dca != '':
-                fx_on = int(float(dca)) < 0
-            if fx_on:
-                print "DEBUG: activating FX send on channel " + str(path + first_path)
-                snp_file.write('/' + osc_prefix + '/' + str(path + first_path).zfill(2) + '/mix/' + STC_FX_BUS + ' ON\n')
-            else:
-                snp_file.write('/' + osc_prefix + '/' + str(path + first_path).zfill(2) + '/mix/' + STC_FX_BUS + ' OFF\n')
-
+            
 
 ################################################################################
 # Main
@@ -215,13 +205,37 @@ if __name__ == "__main__":
         snp_file.write('#2.1# "' + cue + '" 0 0 0 0 0\n')
         
         # process channels
-        process_paths(ods, snp_file, row_index, FIRST_CHAN, FIRST_CHAN_COL, NUM_CHANS, 'ch', True)
+        process_paths(ods, snp_file, row_index, FIRST_CHAN, FIRST_CHAN_COL, NUM_CHANS, 'ch')
         
         # process buses
-        process_paths(ods, snp_file, row_index, FIRST_BUS, FIRST_BUS_COL, NUM_BUSES, 'bus', False)
+        process_paths(ods, snp_file, row_index, FIRST_BUS, FIRST_BUS_COL, NUM_BUSES, 'bus')
         
         # process auxins
-        process_paths(ods, snp_file, row_index, FIRST_AUXIN, FIRST_AUXIN_COL, NUM_AUXINS, 'auxin', False)
+        process_paths(ods, snp_file, row_index, FIRST_AUXIN, FIRST_AUXIN_COL, NUM_AUXINS, 'auxin')
+
+        # STC
+        # for channels only, also control the mute of the given FX bus send for this path
+        if STC_FX:
+            for chan in range(0, NUM_CHANS):
+                dca = ods_cell(ods, row_index, chan + FIRST_CHAN_COL)
+                fx_on = False
+                if dca != '':
+                    fx_on = int(float(dca)) < 0
+                if fx_on:
+                    print 'DEBUG: activating FX send on channel ' + str(chan + FIRST_CHAN)
+                    snp_file.write('/ch/' + str(chan + FIRST_CHAN).zfill(2) + '/mix/' + STC_FX_BUS + ' ON\n')
+                else:
+                    snp_file.write('/ch/' + str(chan + FIRST_CHAN).zfill(2) + '/mix/' + STC_FX_BUS + ' OFF\n')
+        
+        # Craig Flint
+        # for channels only, set name from additional spreadsheet data
+        # this is incomplete, as it breaks the rules about random-access, but it'll do as a first test
+        if CF_NAME_CHANS:
+            for chan in range(0, NUM_CHANS):
+                name = ods_cell(ods, row_index, chan + CF_FIRST_CHAN_NAME_COL)
+                if name != '':
+                    print 'DEBUG: renaming channel ' + str(chan + FIRST_CHAN) + ' as "' + name + '"'
+                    snp_file.write('/ch/' + str(chan + FIRST_CHAN) + '/config/name "' + name + '"\n')
         
         # finally we write out the new DCA labels
         for dca in range(0, NUM_DCAS):
