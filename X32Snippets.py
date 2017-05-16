@@ -5,7 +5,7 @@
 # X32 Snippets
 #
 # Last mod:
-# May 10, 2017
+# May 16, 2017
 #
 # Written by:
 # Simon Eves (simon@eves.us)
@@ -19,7 +19,7 @@
 #
 ################################################################################
 
-VERSION = "1.5 Beta 1"
+VERSION = "1.5 Beta 2"
 
 ################################################################################
 # Imports
@@ -37,7 +37,7 @@ from pyexcel_ods import get_data
 # Set these appropriately for your source spreadsheet layout
 ################################################################################
 
-SHEET_NAME             = "Sheet1" # spreadsheet sub-sheet name containing all data
+SHEET_NAME             = 'Sheet1' # spreadsheet sub-sheet name containing all data
 
 SKIP_ROWS              = 5      # number of spreadsheet rows to skip before extracting data
 
@@ -67,6 +67,11 @@ CF_WARN_COLOR          = 'RD'   # color for warning DCA labels (if WARN_DCAS)
 # Craig Flint name channels
 CF_NAME_CHANS          = False  # set channel names
 CF_FIRST_CHAN_NAME_COL = 35     # spreadsheet column of name for the first channel
+
+# Craig Flint alternative color DCA labels
+CF_ALT_LABEL_COLORS     = False
+CF_ALT_LABELS           = [ 'Reverb', 'KeithVerb', 'Cave FX' ] # color these DCA labels differently
+CF_ALT_COLOR            = 'MG'
 
 # STC FX send automation
 STC_FX                 = False  # negative path DCA indexes mean also un-mute that path's FX send to the bus below
@@ -124,6 +129,47 @@ def process_paths(ods, snp_file, row_index, first_path, first_path_col, num_path
         if not mutes[path]:
             snp_file.write('/' + osc_prefix + '/' + str(path + first_path).zfill(2) + '/mix/on ON\n')
             
+def next_dca_label(ods, row_index, col):
+
+    # function to find the contents of the cell in col 'col' in the next row below 'row_index' that has a valid cue number
+
+    # are we already at the END?
+    search_cue = ods_cell(ods, row_index, CUE_NUM_COL)
+    if search_cue == 'END':
+        return ''
+
+    # find the next row that has a valid cue
+    search_row = row_index + 1
+    search_label = ods_cell(ods, search_row, CUE_NUM_COL)
+    while search_cue == '':
+        search_row = search_row + 1
+        search_cue = ods_cell(ods, search_row, CUE_NUM_COL)
+
+    # was it the END
+    if search_cue == 'END':
+        return ''
+
+    # otherwise return whatever's in the column
+    return ods_cell(ods, search_row, col)
+
+def current_or_previous_channel_name(ods, row_index, col):
+
+    # function to find the contents of the next non-empty cell in col 'col' and row 'row_index' or above
+
+    # are we already at the top?
+    if row_index <= SKIP_ROWS:
+        return ''
+
+    # search upwards to find the previous non-empty cell in this column
+    search_row = row_index
+    search_name = ods_cell(ods, search_row, col)
+    while search_cue == '' and search_row > SKIP_ROWS:
+        search_row = search_row - 1
+        search_name = ods_cell(ods, search_row, col)
+
+    # return
+    return search_name
+
 
 ################################################################################
 # Main
@@ -131,9 +177,10 @@ def process_paths(ods, snp_file, row_index, first_path, first_path_col, num_path
         
 if __name__ == "__main__":
 
-    print "#####################"
-    print "# X32 Snippets v" + VERSION
-    print "#####################"
+    title = '# X32 Snippets v' + VERSION
+    print '#' * len(title)
+    print title
+    print '#' * len(title)
     
     #
     # validate command-line parameters
@@ -181,7 +228,7 @@ if __name__ == "__main__":
             continue
             
         # the end?
-        if cue == "END":
+        if cue == 'END':
             break
             
         # get cue number
@@ -229,22 +276,24 @@ if __name__ == "__main__":
         
         # Craig Flint
         # for channels only, set name from additional spreadsheet data
-        # this is incomplete, as it breaks the rules about random-access, but it'll do as a first test
         if CF_NAME_CHANS:
             for chan in range(0, NUM_CHANS):
-                name = ods_cell(ods, row_index, chan + CF_FIRST_CHAN_NAME_COL)
-                if name != '':
-                    print 'DEBUG: renaming channel ' + str(chan + FIRST_CHAN) + ' as "' + name + '"'
-                    snp_file.write('/ch/' + str(chan + FIRST_CHAN) + '/config/name "' + name + '"\n')
+                name_on_or_above = current_or_previous_channel_name(ods, row_index, chan + CF_FIRST_CHAN_NAME_COL)
+                if name_on_or_above != '':
+                    print 'DEBUG: renaming channel ' + str(chan + FIRST_CHAN) + ' as "' + name_on_or_above + '"'
+                    snp_file.write('/ch/' + str(chan + FIRST_CHAN) + '/config/name "' + name_on_or_above + '"\n')
         
         # finally we write out the new DCA labels
         for dca in range(0, NUM_DCAS):
             label = ods_cell(ods, row_index, dca + FIRST_DCA_COL)
-            labelbelow = ods_cell(ods, row_index + 1, dca + FIRST_DCA_COL)
+            label_below = next_dca_label(ods, row_index, dca + FIRST_DCA_COL)
             if label != '':
                 snp_file.write('/dca/' + str(dca + 1) + '/config/name "' + label + '"\n')
-                snp_file.write('/dca/' + str(dca + 1) + '/config/color ' + DCA_COLOR + '\n')
-            elif CF_WARN_DCAS and labelbelow != '':
+                if CF_ALT_LABEL_COLORS and label in CF_ALT_LABELS:
+                    snp_file.write('/dca/' + str(dca + 1) + '/config/color ' + CF_ALT_COLOR + '\n')
+                else:
+                    snp_file.write('/dca/' + str(dca + 1) + '/config/color ' + DCA_COLOR + '\n')
+            elif CF_WARN_DCAS and label_below != '':
                 snp_file.write('/dca/' + str(dca + 1) + '/config/name "' + labelbelow + '"\n')
                 snp_file.write('/dca/' + str(dca + 1) + '/config/color ' + CF_WARN_COLOR + '\n')
             else:
@@ -266,7 +315,7 @@ if __name__ == "__main__":
     #
     
     # report
-    print "Creating show file..."
+    print 'Creating show file...'
     
     # open show file
     shw_file = open(show_name + '.shw', 'w')
@@ -276,7 +325,7 @@ if __name__ == "__main__":
     shw_file.write('show "' + show_name +'" 0 0 0 0 0 0 0 0 0 0 "X32-Edit 3.00"\n')
     
     # report
-    print "Writing cues..."
+    print 'Writing cues...'
     
     # write cues
     cue_index = 0
@@ -285,7 +334,7 @@ if __name__ == "__main__":
         cue_index = cue_index + 1
     
     # report
-    print "Writing snippets..."
+    print 'Writing snippets...'
     
     # write snippet refs
     snp_index = 0
@@ -297,4 +346,4 @@ if __name__ == "__main__":
     shw_file.close()
     
     # all done
-    print "Goodbye!"
+    print 'Done!'

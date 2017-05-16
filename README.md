@@ -1,4 +1,6 @@
-# X32
+# X32Snippets
+
+Current Version 1.5 Beta 2
 
 ### Background
 
@@ -60,7 +62,9 @@ NOTE: The resulting files have only been tested to load successfully on a consol
 
 Enabling **CF_WARN_DCAS** will cause DCA faders which will be active on the *next* cue to be illuminated with the color specified in **CF_WARN_COLOR** (value options same as above). Note that this code only checks the next spreadsheet row, so will not detect the next active DCA if there are row gaps between cues.
 
-Enabling **CF_NAME_CHANS** will cause the channel labels to be updated as well as the DCA labels. This requires an additional set of columns in the spreadsheet, starting at **CF_FIRST_CHAN_NAME_COL**. If a cell in those columns is non-empty, the channel name will be changed to that value on that cue. NOTE: this functionality is incomplete!
+Enabling **CF_NAME_CHANS** will cause the channel labels to be updated as well as the DCA labels. This requires an additional set of columns in the spreadsheet, starting at **CF_FIRST_CHAN_NAME_COL**. If a cell in those columns is non-empty, the channel name will be changed to that value on that cue.
+
+Enabling **CF_ALT_LABEL_COLORS** will cause DCA labels which match any of the strings in **CF_ALT_LABELS** to be colored as **CF_ALT_COLOR** instead of **DCA_COLOR**.
 
 ### STC functionality
 
