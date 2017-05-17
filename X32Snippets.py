@@ -5,7 +5,7 @@
 # X32 Snippets
 #
 # Last mod:
-# May 16, 2017
+# May 17, 2017
 #
 # Written by:
 # Simon Eves (simon@eves.us)
@@ -19,7 +19,7 @@
 #
 ################################################################################
 
-VERSION = "1.5 Beta 2"
+VERSION = "1.5 Beta 3"
 
 ################################################################################
 # Imports
@@ -37,40 +37,42 @@ from pyexcel_ods import get_data
 # Set these appropriately for your source spreadsheet layout
 ################################################################################
 
-SHEET_NAME             = 'Sheet1' # spreadsheet sub-sheet name containing all data
+# values for CF Gala
 
-SKIP_ROWS              = 5      # number of spreadsheet rows to skip before extracting data
+SHEET_NAME             = 'DCA1' # spreadsheet sub-sheet name containing all data
+
+SKIP_ROWS              = 2      # number of spreadsheet rows to skip before extracting data
 
 CUE_NUM_COL            = 0      # spreadsheet column of snippet index data (must be monotonically incrementing integers)
 CUE_LABEL_COL          = 1      # spreadsheet column of cue data (any short string)
 
 FIRST_CHAN             = 1      # number of first physical channel to control
-FIRST_CHAN_COL         = 4      # spreadsheet column of data for that first channel
-NUM_CHANS              = 21     # number of contiguous set of channels
+FIRST_CHAN_COL         = 2      # spreadsheet column of data for that first channel
+NUM_CHANS              = 25     # number of contiguous set of channels
 
-FIRST_BUS              = 0      # number of first physical bus to control (13 = FX1)
-FIRST_BUS_COL          = 0      # spreadsheet column of data for that first bus
-NUM_BUSES              = 0      # number of contiguous set of buses (4 = FX1-4)
+FIRST_BUS              = 14     # number of first physical bus to control (13 = FX1)
+FIRST_BUS_COL          = 27     # spreadsheet column of data for that first bus
+NUM_BUSES              = 3      # number of contiguous set of buses (4 = FX1-4)
 
-FIRST_AUXIN            = 0      # number of first physical auxin to control (5 = AuxIn 5)
-FIRST_AUXIN_COL        = 0      # spreadsheet column of data for that first auxin
-NUM_AUXINS             = 0      # number of contiguous set of auxins (2 = AuxIn 5-6)
+FIRST_AUXIN            = 5      # number of first physical auxin to control (5 = AuxIn 5)
+FIRST_AUXIN_COL        = 31     # spreadsheet column of data for that first auxin
+NUM_AUXINS             = 1      # number of contiguous set of auxins (2 = AuxIn 5-6)
 
-FIRST_DCA_COL          = 26     # spreadsheet column of data for first DCA
-NUM_DCAS               = 8      # number of DCAs
-DCA_COLOR              = 'WH'   # color for active DCA labels
+FIRST_DCA_COL          = 33     # spreadsheet column of data for first DCA
+NUM_DCAS               = 7      # number of DCAs
+DCA_COLOR              = 'GN'   # color for active DCA labels
 
 # Craig Flint warn upcoming DCAs
-CF_WARN_DCAS           = False  # show next cue's active DCAs in red?
+CF_WARN_DCAS           = True   # show next cue's active DCAs in red?
 CF_WARN_COLOR          = 'RD'   # color for warning DCA labels (if WARN_DCAS)
 
 # Craig Flint name channels
-CF_NAME_CHANS          = False  # set channel names
-CF_FIRST_CHAN_NAME_COL = 35     # spreadsheet column of name for the first channel
+CF_NAME_CHANS          = True   # set channel names
+CF_FIRST_CHAN_NAME_COL = 41     # spreadsheet column of name for the first channel
 
 # Craig Flint alternative color DCA labels
-CF_ALT_LABEL_COLORS     = False
-CF_ALT_LABELS           = [ 'Reverb', 'KeithVerb', 'Cave FX' ] # color these DCA labels differently
+CF_ALT_LABEL_COLORS     = True
+CF_ALT_LABELS           = [ 'Reverb', 'Sh Dly', 'Lg Dly', 'Delay' ] # color these DCA labels differently
 CF_ALT_COLOR            = 'MG'
 
 # STC FX send automation
@@ -140,7 +142,7 @@ def next_dca_label(ods, row_index, col):
 
     # find the next row that has a valid cue
     search_row = row_index + 1
-    search_label = ods_cell(ods, search_row, CUE_NUM_COL)
+    search_cue = ods_cell(ods, search_row, CUE_NUM_COL)
     while search_cue == '':
         search_row = search_row + 1
         search_cue = ods_cell(ods, search_row, CUE_NUM_COL)
@@ -163,7 +165,7 @@ def current_or_previous_channel_name(ods, row_index, col):
     # search upwards to find the previous non-empty cell in this column
     search_row = row_index
     search_name = ods_cell(ods, search_row, col)
-    while search_cue == '' and search_row > SKIP_ROWS:
+    while search_name == '' and search_row > SKIP_ROWS:
         search_row = search_row - 1
         search_name = ods_cell(ods, search_row, col)
 
@@ -281,7 +283,7 @@ if __name__ == "__main__":
                 name_on_or_above = current_or_previous_channel_name(ods, row_index, chan + CF_FIRST_CHAN_NAME_COL)
                 if name_on_or_above != '':
                     print 'DEBUG: renaming channel ' + str(chan + FIRST_CHAN) + ' as "' + name_on_or_above + '"'
-                    snp_file.write('/ch/' + str(chan + FIRST_CHAN) + '/config/name "' + name_on_or_above + '"\n')
+                    snp_file.write('/ch/' + str(chan + FIRST_CHAN).zfill(2) + '/config/name "' + name_on_or_above + '"\n')
         
         # finally we write out the new DCA labels
         for dca in range(0, NUM_DCAS):
@@ -294,7 +296,7 @@ if __name__ == "__main__":
                 else:
                     snp_file.write('/dca/' + str(dca + 1) + '/config/color ' + DCA_COLOR + '\n')
             elif CF_WARN_DCAS and label_below != '':
-                snp_file.write('/dca/' + str(dca + 1) + '/config/name "' + labelbelow + '"\n')
+                snp_file.write('/dca/' + str(dca + 1) + '/config/name "' + label_below + '"\n')
                 snp_file.write('/dca/' + str(dca + 1) + '/config/color ' + CF_WARN_COLOR + '\n')
             else:
                 snp_file.write('/dca/' + str(dca + 1) + '/config/name ""\n')
