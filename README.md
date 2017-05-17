@@ -1,6 +1,6 @@
 # X32Snippets
 
-Current Version 1.5 Beta 2
+Current Version 1.5 Beta 3
 
 ### Background
 
