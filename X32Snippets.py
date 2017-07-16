@@ -5,7 +5,7 @@
 # X32 Snippets
 #
 # Last mod:
-# May 17, 2017
+# July 16, 2017
 #
 # Written by:
 # Simon Eves (simon@eves.us)
@@ -19,7 +19,7 @@
 #
 ################################################################################
 
-VERSION = "1.5 Beta 3"
+VERSION = "1.6"
 
 ################################################################################
 # Imports
@@ -37,47 +37,52 @@ from pyexcel_ods import get_data
 # Set these appropriately for your source spreadsheet layout
 ################################################################################
 
-# values for CF Gala
+# values for Heathers
 
-SHEET_NAME             = 'DCA1' # spreadsheet sub-sheet name containing all data
+SHEET_NAME             = 'Sheet1' # spreadsheet sub-sheet name containing all data
 
-SKIP_ROWS              = 2      # number of spreadsheet rows to skip before extracting data
+SKIP_ROWS              = 6      # number of spreadsheet rows to skip before extracting data
 
-CUE_NUM_COL            = 0      # spreadsheet column of snippet index data (must be monotonically incrementing integers)
+CUE_NUM_COL            = 0      # spreadsheet column of cue number data (can be integer or tenths, e.g. "1" or "1.1")
 CUE_LABEL_COL          = 1      # spreadsheet column of cue data (any short string)
 
-FIRST_CHAN             = 1      # number of first physical channel to control
-FIRST_CHAN_COL         = 2      # spreadsheet column of data for that first channel
-NUM_CHANS              = 25     # number of contiguous set of channels
+PATH_NUM_ROW           = 0      # row containing path (chan, bus, aux) numbers
 
-FIRST_BUS              = 14     # number of first physical bus to control (13 = FX1)
-FIRST_BUS_COL          = 27     # spreadsheet column of data for that first bus
-NUM_BUSES              = 3      # number of contiguous set of buses (4 = FX1-4)
+FIRST_CHAN_COL         = 4      # spreadsheet column of data for that first channel
+NUM_CHANS              = 17     # number of contiguous set of channels
 
-FIRST_AUXIN            = 5      # number of first physical auxin to control (5 = AuxIn 5)
-FIRST_AUXIN_COL        = 31     # spreadsheet column of data for that first auxin
-NUM_AUXINS             = 1      # number of contiguous set of auxins (2 = AuxIn 5-6)
+FIRST_BUS_COL          = 0      # spreadsheet column of data for that first bus
+NUM_BUSES              = 0      # number of contiguous set of buses (4 = FX1-4)
 
-FIRST_DCA_COL          = 33     # spreadsheet column of data for first DCA
+FIRST_AUXIN_COL        = 0      # spreadsheet column of data for that first auxin
+NUM_AUXINS             = 0      # number of contiguous set of auxins (2 = AuxIn 5-6)
+
+FIRST_DCA_COL          = 22     # spreadsheet column of data for first DCA
 NUM_DCAS               = 7      # number of DCAs
-DCA_COLOR              = 'GN'   # color for active DCA labels
+DCA_COLOR              = 'WH'   # color for active DCA labels
 
 # Craig Flint warn upcoming DCAs
-CF_WARN_DCAS           = True   # show next cue's active DCAs in red?
+CF_WARN_DCAS           = False  # show next cue's active DCAs in red?
 CF_WARN_COLOR          = 'RD'   # color for warning DCA labels (if WARN_DCAS)
 
 # Craig Flint name channels
-CF_NAME_CHANS          = True   # set channel names
-CF_FIRST_CHAN_NAME_COL = 41     # spreadsheet column of name for the first channel
+CF_NAME_CHANS          = False # set channel names
+CF_FIRST_CHAN_NAME_COL = 0     # spreadsheet column of name for the first channel
 
 # Craig Flint alternative color DCA labels
-CF_ALT_LABEL_COLORS     = True
-CF_ALT_LABELS           = [ 'Reverb', 'Sh Dly', 'Lg Dly', 'Delay' ] # color these DCA labels differently
-CF_ALT_COLOR            = 'MG'
+CF_ALT_LABEL_COLORS    = False
+CF_ALT_LABELS          = [ 'Reverb', 'Sh Dly', 'Lg Dly', 'Delay' ] # color these DCA labels differently
+CF_ALT_COLOR           = 'MG'
 
-# STC FX send automation
-STC_FX                 = False  # negative path DCA indexes mean also un-mute that path's FX send to the bus below
-STC_FX_BUS             = '14'   # set the send from the paths to this FX bus (zero-padded number as string)
+# Simon Eves FX send automation
+SE_FX                  = True   # negative path DCA indexes mean also un-mute that path's FX send to the bus below
+SE_FX_BUS              = '14'   # set the send from the paths to this FX bus (zero-padded number as string)
+
+# Simon Eves band muting automation
+SE_BAND_MUTES          = False  # mute one band channel per cue, all others will be unmuted (e.g. for switching basses)
+SE_FIRST_BAND_CHAN     = 17     # first board channel for the band
+SE_NUM_BAND_CHANS      = 10     # number of consecutive board channels for the band
+SE_BAND_MUTES_COL      = 41     # spreadsheet column of data for which channel to mute
 
 
 ################################################################################
@@ -98,9 +103,10 @@ def ods_cell(d, r, c):
     except:
         return ''
 
-def process_paths(ods, snp_file, row_index, first_path, first_path_col, num_paths, osc_prefix):
+def process_paths(ods, snp_file, row_index, first_path_col, num_paths, osc_prefix):
 
     # general function to process paths of any of the three types
+    # we pull the actual board path number from PATH_NUM_ROW
 
     # first we find which paths in this cue have any DCA assignment and therefore need to be unmuted
     mutes = []
@@ -114,7 +120,8 @@ def process_paths(ods, snp_file, row_index, first_path, first_path_col, num_path
     # then we write out mute-ons for paths which have become muted
     for path in range(0, num_paths):
         if mutes[path]:
-            snp_file.write('/' + osc_prefix + '/' + str(path + first_path).zfill(2) + '/mix/on OFF\n')
+            path_num = int(float(ods_cell(ods, PATH_NUM_ROW, path + first_path_col)))
+            snp_file.write('/' + osc_prefix + '/' + str(path_num).zfill(2) + '/mix/on OFF\n')
 
     # then we write out the new DCA assignments
     for path in range(0, num_paths):
@@ -124,12 +131,14 @@ def process_paths(ods, snp_file, row_index, first_path, first_path_col, num_path
             bitmap = 1 << (abs(int(float(dca))) - 1)
         else:
             bitmap = 0
-        snp_file.write('/' + osc_prefix + '/' + str(path + first_path).zfill(2) + '/grp/dca ' + str(bitmap) + '\n')
+        path_num = int(float(ods_cell(ods, PATH_NUM_ROW, path + first_path_col)))
+        snp_file.write('/' + osc_prefix + '/' + str(path_num).zfill(2) + '/grp/dca ' + str(bitmap) + '\n')
     
     # then we write out mute-offs for paths which have become un-muted
     for path in range(0, num_paths):
         if not mutes[path]:
-            snp_file.write('/' + osc_prefix + '/' + str(path + first_path).zfill(2) + '/mix/on ON\n')
+            path_num = int(float(ods_cell(ods, PATH_NUM_ROW, path + first_path_col)))
+            snp_file.write('/' + osc_prefix + '/' + str(path_num).zfill(2) + '/mix/on ON\n')
             
 def next_dca_label(ods, row_index, col):
 
@@ -254,36 +263,51 @@ if __name__ == "__main__":
         snp_file.write('#2.1# "' + cue + '" 0 0 0 0 0\n')
         
         # process channels
-        process_paths(ods, snp_file, row_index, FIRST_CHAN, FIRST_CHAN_COL, NUM_CHANS, 'ch')
+        process_paths(ods, snp_file, row_index, FIRST_CHAN_COL, NUM_CHANS, 'ch')
         
         # process buses
-        process_paths(ods, snp_file, row_index, FIRST_BUS, FIRST_BUS_COL, NUM_BUSES, 'bus')
+        process_paths(ods, snp_file, row_index, FIRST_BUS_COL, NUM_BUSES, 'bus')
         
         # process auxins
-        process_paths(ods, snp_file, row_index, FIRST_AUXIN, FIRST_AUXIN_COL, NUM_AUXINS, 'auxin')
-
-        # STC
+        process_paths(ods, snp_file, row_index, FIRST_AUXIN_COL, NUM_AUXINS, 'auxin')
+        
+        # Simon Eves
         # for channels only, also control the mute of the given FX bus send for this path
-        if STC_FX:
+        if SE_FX:
             for chan in range(0, NUM_CHANS):
                 dca = ods_cell(ods, row_index, chan + FIRST_CHAN_COL)
                 fx_on = False
                 if dca != '':
                     fx_on = int(float(dca)) < 0
+                chan_num = int(float(ods_cell(ods, PATH_NUM_ROW, chan + FIRST_CHAN_COL)))
                 if fx_on:
-                    print 'DEBUG: activating FX send on channel ' + str(chan + FIRST_CHAN)
-                    snp_file.write('/ch/' + str(chan + FIRST_CHAN).zfill(2) + '/mix/' + STC_FX_BUS + ' ON\n')
+                    print 'DEBUG: activating FX send on channel ' + str(chan_num)
+                    snp_file.write('/ch/' + str(chan_num).zfill(2) + '/mix/' + SE_FX_BUS + ' ON\n')
                 else:
-                    snp_file.write('/ch/' + str(chan + FIRST_CHAN).zfill(2) + '/mix/' + STC_FX_BUS + ' OFF\n')
+                    snp_file.write('/ch/' + str(chan_num).zfill(2) + '/mix/' + SE_FX_BUS + ' OFF\n')
         
         # Craig Flint
         # for channels only, set name from additional spreadsheet data
         if CF_NAME_CHANS:
             for chan in range(0, NUM_CHANS):
                 name_on_or_above = current_or_previous_channel_name(ods, row_index, chan + CF_FIRST_CHAN_NAME_COL)
+                chan_num = int(float(ods_cell(ods, PATH_NUM_ROW, chan + FIRST_CHAN_COL)))
                 if name_on_or_above != '':
-                    print 'DEBUG: renaming channel ' + str(chan + FIRST_CHAN) + ' as "' + name_on_or_above + '"'
-                    snp_file.write('/ch/' + str(chan + FIRST_CHAN).zfill(2) + '/config/name "' + name_on_or_above + '"\n')
+                    print 'DEBUG: renaming channel ' + str(chan_num) + ' as "' + name_on_or_above + '"'
+                    snp_file.write('/ch/' + str(chan_num).zfill(2) + '/config/name "' + name_on_or_above + '"\n')
+        
+        # Simon Eves
+        # mute specified band channels
+        if SE_BAND_MUTES:
+            mute = ods_cell(ods, row_index, SE_BAND_MUTES_COL)
+            if mute != '':
+                mute_chan = int(float(mute))
+                for chan in range(0, SE_NUM_BAND_CHANS):
+                    if (chan + SE_FIRST_BAND_CHAN) == mute_chan:
+                        print 'DEBUG: muting band channel ' + str(chan + SE_FIRST_BAND_CHAN)
+                        snp_file.write('/ch/' + str(chan + SE_FIRST_BAND_CHAN).zfill(2) + '/mix/on OFF\n')
+                    else:
+                        snp_file.write('/ch/' + str(chan + SE_FIRST_BAND_CHAN).zfill(2) + '/mix/on ON\n')
         
         # finally we write out the new DCA labels
         for dca in range(0, NUM_DCAS):
