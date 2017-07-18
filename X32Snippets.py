@@ -5,7 +5,7 @@
 # X32 Snippets
 #
 # Last mod:
-# July 16, 2017
+# July 18, 2017
 #
 # Written by:
 # Simon Eves (simon@eves.us)
@@ -19,7 +19,7 @@
 #
 ################################################################################
 
-VERSION = "1.6"
+VERSION = "1.7"
 
 ################################################################################
 # Imports
@@ -62,7 +62,7 @@ NUM_DCAS               = 7      # number of DCAs
 DCA_COLOR              = 'WH'   # color for active DCA labels
 
 # Craig Flint warn upcoming DCAs
-CF_WARN_DCAS           = False  # show next cue's active DCAs in red?
+CF_WARN_DCAS           = True  # show next cue's active DCAs
 CF_WARN_COLOR          = 'RD'   # color for warning DCA labels (if WARN_DCAS)
 
 # Craig Flint name channels
@@ -75,14 +75,14 @@ CF_ALT_LABELS          = [ 'Reverb', 'Sh Dly', 'Lg Dly', 'Delay' ] # color these
 CF_ALT_COLOR           = 'MG'
 
 # Simon Eves FX send automation
-SE_FX                  = True   # negative path DCA indexes mean also un-mute that path's FX send to the bus below
+SE_FX                  = False  # negative path DCA indexes mean also un-mute that path's FX send to the bus below
 SE_FX_BUS              = '14'   # set the send from the paths to this FX bus (zero-padded number as string)
 
 # Simon Eves band muting automation
-SE_BAND_MUTES          = False  # mute one band channel per cue, all others will be unmuted (e.g. for switching basses)
+SE_BAND_MUTES          = True   # mute one or more band channel per cue, all others will be unmuted (e.g. for switching basses)
 SE_FIRST_BAND_CHAN     = 17     # first board channel for the band
-SE_NUM_BAND_CHANS      = 10     # number of consecutive board channels for the band
-SE_BAND_MUTES_COL      = 41     # spreadsheet column of data for which channel to mute
+SE_NUM_BAND_CHANS      = 11     # number of consecutive board channels for the band
+SE_BAND_MUTE_COLS      = [ 31, 32, 33 ] # spreadsheet column of data for first channel to mute
 
 
 ################################################################################
@@ -263,13 +263,16 @@ if __name__ == "__main__":
         snp_file.write('#2.1# "' + cue + '" 0 0 0 0 0\n')
         
         # process channels
-        process_paths(ods, snp_file, row_index, FIRST_CHAN_COL, NUM_CHANS, 'ch')
+        if NUM_CHANS > 0:
+        	process_paths(ods, snp_file, row_index, FIRST_CHAN_COL, NUM_CHANS, 'ch')
         
         # process buses
-        process_paths(ods, snp_file, row_index, FIRST_BUS_COL, NUM_BUSES, 'bus')
+        if NUM_BUSES > 0:
+        	process_paths(ods, snp_file, row_index, FIRST_BUS_COL, NUM_BUSES, 'bus')
         
         # process auxins
-        process_paths(ods, snp_file, row_index, FIRST_AUXIN_COL, NUM_AUXINS, 'auxin')
+        if NUM_AUXINS > 0:
+        	process_paths(ods, snp_file, row_index, FIRST_AUXIN_COL, NUM_AUXINS, 'auxin')
         
         # Simon Eves
         # for channels only, also control the mute of the given FX bus send for this path
@@ -299,15 +302,19 @@ if __name__ == "__main__":
         # Simon Eves
         # mute specified band channels
         if SE_BAND_MUTES:
-            mute = ods_cell(ods, row_index, SE_BAND_MUTES_COL)
-            if mute != '':
-                mute_chan = int(float(mute))
-                for chan in range(0, SE_NUM_BAND_CHANS):
-                    if (chan + SE_FIRST_BAND_CHAN) == mute_chan:
-                        print 'DEBUG: muting band channel ' + str(chan + SE_FIRST_BAND_CHAN)
-                        snp_file.write('/ch/' + str(chan + SE_FIRST_BAND_CHAN).zfill(2) + '/mix/on OFF\n')
-                    else:
-                        snp_file.write('/ch/' + str(chan + SE_FIRST_BAND_CHAN).zfill(2) + '/mix/on ON\n')
+        	for chan in range(0, SE_NUM_BAND_CHANS):
+        		mute_this_chan = False
+	        	for col in SE_BAND_MUTE_COLS:
+            		mute_info = ods_cell(ods, row_index, col)
+            		if mute_info != '':
+		                mute_chan = int(float(mute_info))
+		                if mute_chan == chan + SE_FIRST_BAND_CHAN:
+		                	mute_this_chan = True
+                if mute_this_chan:
+                	print 'DEBUG: muting band channel ' + str(chan + SE_FIRST_BAND_CHAN)
+                	snp_file.write('/ch/' + str(chan + SE_FIRST_BAND_CHAN).zfill(2) + '/mix/on OFF\n')
+            	else:
+                    snp_file.write('/ch/' + str(chan + SE_FIRST_BAND_CHAN).zfill(2) + '/mix/on ON\n')
         
         # finally we write out the new DCA labels
         for dca in range(0, NUM_DCAS):
