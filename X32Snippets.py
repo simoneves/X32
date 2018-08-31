@@ -5,7 +5,7 @@
 # X32 Snippets
 #
 # Last mod:
-# July 18, 2017
+# August 30, 2018
 #
 # Written by:
 # Simon Eves (simon@eves.us)
@@ -19,7 +19,7 @@
 #
 ################################################################################
 
-VERSION = "1.7"
+VERSION = "1.8"
 
 ################################################################################
 # Imports
@@ -41,12 +41,12 @@ from pyexcel_ods import get_data
 
 SHEET_NAME             = 'Sheet1' # spreadsheet sub-sheet name containing all data
 
-SKIP_ROWS              = 6      # number of spreadsheet rows to skip before extracting data
+SKIP_ROWS              = 3      # number of spreadsheet rows to skip before extracting data
 
 CUE_NUM_COL            = 0      # spreadsheet column of cue number data (can be integer or tenths, e.g. "1" or "1.1")
 CUE_LABEL_COL          = 1      # spreadsheet column of cue data (any short string)
 
-PATH_NUM_ROW           = 0      # row containing path (chan, bus, aux) numbers
+PATH_NUM_ROW           = 2      # row containing path (chan, bus, aux) numbers
 
 FIRST_CHAN_COL         = 4      # spreadsheet column of data for that first channel
 NUM_CHANS              = 17     # number of contiguous set of channels
@@ -84,6 +84,9 @@ SE_FIRST_BAND_CHAN     = 17     # first board channel for the band
 SE_NUM_BAND_CHANS      = 11     # number of consecutive board channels for the band
 SE_BAND_MUTE_COLS      = [ 31, 32, 33 ] # spreadsheet column of data for first channel to mute
 
+# Aaron Yoffe DCA-stays-the-same
+AY_DCA_SAME            = True
+AY_DCA_SAME_COLOR      = 'GN'
 
 ################################################################################
 # Functions
@@ -264,15 +267,15 @@ if __name__ == "__main__":
         
         # process channels
         if NUM_CHANS > 0:
-        	process_paths(ods, snp_file, row_index, FIRST_CHAN_COL, NUM_CHANS, 'ch')
+            process_paths(ods, snp_file, row_index, FIRST_CHAN_COL, NUM_CHANS, 'ch')
         
         # process buses
         if NUM_BUSES > 0:
-        	process_paths(ods, snp_file, row_index, FIRST_BUS_COL, NUM_BUSES, 'bus')
+            process_paths(ods, snp_file, row_index, FIRST_BUS_COL, NUM_BUSES, 'bus')
         
         # process auxins
         if NUM_AUXINS > 0:
-        	process_paths(ods, snp_file, row_index, FIRST_AUXIN_COL, NUM_AUXINS, 'auxin')
+            process_paths(ods, snp_file, row_index, FIRST_AUXIN_COL, NUM_AUXINS, 'auxin')
         
         # Simon Eves
         # for channels only, also control the mute of the given FX bus send for this path
@@ -302,32 +305,34 @@ if __name__ == "__main__":
         # Simon Eves
         # mute specified band channels
         if SE_BAND_MUTES:
-        	for chan in range(0, SE_NUM_BAND_CHANS):
-        		mute_this_chan = False
-	        	for col in SE_BAND_MUTE_COLS:
-            		mute_info = ods_cell(ods, row_index, col)
-            		if mute_info != '':
-		                mute_chan = int(float(mute_info))
-		                if mute_chan == chan + SE_FIRST_BAND_CHAN:
-		                	mute_this_chan = True
+            for chan in range(0, SE_NUM_BAND_CHANS):
+                mute_this_chan = False
+                for col in SE_BAND_MUTE_COLS:
+                    mute_info = ods_cell(ods, row_index, col)
+                    if mute_info != '':
+                        mute_chan = int(float(mute_info))
+                        if mute_chan == chan + SE_FIRST_BAND_CHAN:
+                            mute_this_chan = True
                 if mute_this_chan:
-                	print 'DEBUG: muting band channel ' + str(chan + SE_FIRST_BAND_CHAN)
-                	snp_file.write('/ch/' + str(chan + SE_FIRST_BAND_CHAN).zfill(2) + '/mix/on OFF\n')
-            	else:
+                    print 'DEBUG: muting band channel ' + str(chan + SE_FIRST_BAND_CHAN)
+                    snp_file.write('/ch/' + str(chan + SE_FIRST_BAND_CHAN).zfill(2) + '/mix/on OFF\n')
+                else:
                     snp_file.write('/ch/' + str(chan + SE_FIRST_BAND_CHAN).zfill(2) + '/mix/on ON\n')
         
         # finally we write out the new DCA labels
         for dca in range(0, NUM_DCAS):
             label = ods_cell(ods, row_index, dca + FIRST_DCA_COL)
-            label_below = next_dca_label(ods, row_index, dca + FIRST_DCA_COL)
+            next_label = next_dca_label(ods, row_index, dca + FIRST_DCA_COL)
             if label != '':
                 snp_file.write('/dca/' + str(dca + 1) + '/config/name "' + label + '"\n')
                 if CF_ALT_LABEL_COLORS and label in CF_ALT_LABELS:
                     snp_file.write('/dca/' + str(dca + 1) + '/config/color ' + CF_ALT_COLOR + '\n')
+                elif AY_DCA_SAME and label == next_label:
+                    snp_file.write('/dca/' + str(dca + 1) + '/config/color ' + AY_DCA_SAME_COLOR + '\n')
                 else:
                     snp_file.write('/dca/' + str(dca + 1) + '/config/color ' + DCA_COLOR + '\n')
-            elif CF_WARN_DCAS and label_below != '':
-                snp_file.write('/dca/' + str(dca + 1) + '/config/name "' + label_below + '"\n')
+            elif CF_WARN_DCAS and next_label != '':
+                snp_file.write('/dca/' + str(dca + 1) + '/config/name "' + next_label + '"\n')
                 snp_file.write('/dca/' + str(dca + 1) + '/config/color ' + CF_WARN_COLOR + '\n')
             else:
                 snp_file.write('/dca/' + str(dca + 1) + '/config/name ""\n')
