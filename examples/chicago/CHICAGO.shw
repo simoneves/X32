@@ -1,0 +1,50 @@
+#2.6#
+show "CHICAGO" 0 0 0 0 0 0 0 0 0 0 "X32-Edit 3.00"
+cue/000 100 "Pre-Show" 0 -1 0 0 1 0 0
+cue/001 200 "Curtain" 0 -1 1 0 1 0 0
+cue/002 300 "A1S1" 0 -1 2 0 1 0 0
+cue/003 400 "A1S2" 0 -1 3 0 1 0 0
+cue/004 500 "A1S3" 0 -1 4 0 1 0 0
+cue/005 600 "A1S4" 0 -1 5 0 1 0 0
+cue/006 700 "A1S5" 0 -1 6 0 1 0 0
+cue/007 800 "A1S6" 0 -1 7 0 1 0 0
+cue/008 900 "A1S7" 0 -1 8 0 1 0 0
+cue/009 1000 "A1S8" 0 -1 9 0 1 0 0
+cue/010 1100 "A1S9" 0 -1 10 0 1 0 0
+cue/011 1200 "A1S10" 0 -1 11 0 1 0 0
+cue/012 1300 "A1S11" 0 -1 12 0 1 0 0
+cue/013 1400 "Intermission" 0 -1 13 0 1 0 0
+cue/014 1500 "A2S1" 0 -1 14 0 1 0 0
+cue/015 1600 "A2S1b" 0 -1 15 0 1 0 0
+cue/016 1700 "A2S2" 0 -1 16 0 1 0 0
+cue/017 1800 "A2S3" 0 -1 17 0 1 0 0
+cue/018 1900 "A2S4" 0 -1 18 0 1 0 0
+cue/019 2000 "A2S5" 0 -1 19 0 1 0 0
+cue/020 2100 "A2S6" 0 -1 20 0 1 0 0
+cue/021 2200 "A2S7" 0 -1 21 0 1 0 0
+cue/022 2300 "A2S8" 0 -1 22 0 1 0 0
+cue/023 2400 "A2S8b" 0 -1 23 0 1 0 0
+snippet/000 "Pre-Show" 0 0 0 0 1
+snippet/001 "Curtain" 0 0 0 0 1
+snippet/002 "A1S1" 0 0 0 0 1
+snippet/003 "A1S2" 0 0 0 0 1
+snippet/004 "A1S3" 0 0 0 0 1
+snippet/005 "A1S4" 0 0 0 0 1
+snippet/006 "A1S5" 0 0 0 0 1
+snippet/007 "A1S6" 0 0 0 0 1
+snippet/008 "A1S7" 0 0 0 0 1
+snippet/009 "A1S8" 0 0 0 0 1
+snippet/010 "A1S9" 0 0 0 0 1
+snippet/011 "A1S10" 0 0 0 0 1
+snippet/012 "A1S11" 0 0 0 0 1
+snippet/013 "Intermission" 0 0 0 0 1
+snippet/014 "A2S1" 0 0 0 0 1
+snippet/015 "A2S1b" 0 0 0 0 1
+snippet/016 "A2S2" 0 0 0 0 1
+snippet/017 "A2S3" 0 0 0 0 1
+snippet/018 "A2S4" 0 0 0 0 1
+snippet/019 "A2S5" 0 0 0 0 1
+snippet/020 "A2S6" 0 0 0 0 1
+snippet/021 "A2S7" 0 0 0 0 1
+snippet/022 "A2S8" 0 0 0 0 1
+snippet/023 "A2S8b" 0 0 0 0 1
