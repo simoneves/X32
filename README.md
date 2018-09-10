@@ -1,6 +1,7 @@
 # X32Snippets
 
 Current Version 1.8
+
 August 30, 2018
 
 ### Background
