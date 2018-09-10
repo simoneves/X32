@@ -1,6 +1,7 @@
 # X32Snippets
 
-Current Version 1.5 Beta 3
+Current Version 1.8
+August 30, 2018
 
 ### Background
 
@@ -24,6 +25,8 @@ The files here are the Python script itself, a Bash script to run it with a cert
 
 The spreadsheet has to be in a certain format, and you have to edit the Python script to tell it which parts of the spreadsheet to look at.
 
+NOTE! All row and column indexes described below start from ZERO (Column A = Index 0, Row 1 = Index 0)
+
 ### Control Parameters
 
 **SHEET_NAME**
@@ -33,18 +36,23 @@ This is the default name of an OpenOffice spreadsheet document, as displayed in 
 How many rows from the top to skip before attempting to interpret the spreadsheet contents
 
 **CUE_NUM_COL / CUE_LABEL_COL**
-The column numbers (starting from zero!) of the columns from which to pull the cue number and the cue label string
+The column numbers of the columns from which to pull the cue number and the cue label string
 
-**FIRST_CHAN / NUM_CHANS**
-The first console channel to control (usually 1), and the number of channels to control (inclusive, must be 32 or less)
+**PATH_NUM_ROW**
+The row containing the physical path (channel/bus/aux-in) number of each logical path. This data is mandatory. By default just enter a 1:1 mapping (starting with 1), but if your channels are not a contiguous block then you can use this to skip gaps or reorder them.
 
 **FIRST_CHAN_COL**
-The column number (starting from zero!) of the first console channel's data in the spreadsheet
+**FIRST_BUS_COL**
+**FIRST_AUXIN_COL**
+The column number of the first logical channel/bus/aux-in data in the spreadsheet
 
-(same for buses and aux-ins) (NUM must be 16 or less, or 6 or less, respectively)
+**NUM_CHANS**
+**NUM_BUSES**
+**NUM_AUXINS**
+The number of logical channels/buses/aux-ins to control
 
 **FIRST_DCA_COL**
-The column number (starting from zero!) of the first DCA's data in the spreadsheet (it is assumed starting from DCA 1)
+The column number of the first DCA's data in the spreadsheet (it is assumed starting from DCA 1)
 
 **NUM_DCAS**
 The number of DCAs to generate data for (must be 8 or less)
@@ -69,3 +77,8 @@ Enabling **CF_ALT_LABEL_COLORS** will cause DCA labels which match any of the st
 ### STC functionality
 
 Enabling **STC_FX** will additionally control the bus send mute for any given channel to the single FX bus specified by **STC_FX_BUS**. If the DCA number in the channel column is negative, the channel will still be assigned to the DCA of the positive value, but the bus send for that channel will be un-muted. This allows, for example, reverb to be selectively applied to channels in a given cue, and not in others.
+
+(document **SE_BAND_MUTES**)
+
+Enabling **AY_DCA_SAME** (and setting a color with **AY_DCA_SAME_COLOR**) will cause DCA labels which do not change on the next cue to be lit in that different color, so as to indicate to the user that those faders can be left up through the next cue change.
+
