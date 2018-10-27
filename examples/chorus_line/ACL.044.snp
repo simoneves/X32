@@ -33,17 +33,6 @@
 /ch/11/mix/on ON
 /ch/16/mix/on ON
 /ch/18/mix/on ON
-/ch/17/mix/on ON
-/ch/18/mix/on ON
-/ch/19/mix/on ON
-/ch/20/mix/on ON
-/ch/21/mix/on ON
-/ch/22/mix/on ON
-/ch/23/mix/on ON
-/ch/24/mix/on ON
-/ch/25/mix/on ON
-/ch/26/mix/on ON
-/ch/27/mix/on ON
 /dca/1/config/name ""
 /dca/1/config/color OFF
 /dca/2/config/name "Zach"
@@ -55,6 +44,6 @@
 /dca/5/config/name "Greg"
 /dca/5/config/color WH
 /dca/6/config/name "Don"
-/dca/6/config/color GN
+/dca/6/config/color WH
 /dca/7/config/name ""
 /dca/7/config/color OFF
