@@ -245,7 +245,9 @@ if __name__ == "__main__":
         # get cue number
         cue_number = ''
         try:
-            cue_number = str(string_to_int(cue) * 100.0)
+            # this could be more robust
+            # also does not handle cues of form X.Y.Z or X.Y where Y > 9
+            cue_number = str(int(round(float(cue) * 100.0)))
         except:
             print 'ERROR: Found invalid cue number at row ' + str(row_index + 1)
             sys.exit()
