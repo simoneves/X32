@@ -83,4 +83,8 @@ Enabling this feature will additionally control the mutes of another contiguous 
 
 Download these files, edit the ./runit.sh script appropriately, make it executable (this script will only work on Mac or Linux), and run it.
 
+Copy the resulting files (.snp and .shw) to a USB stick, and insert into the console. Then press Scenes -> Utility -> Import Show, and pick the .shw file from the USB. Note that the entire Snippets library on the console will be overwritten, even those with higher numbers than the script generates.
+
+In Settings -> Global, ensure that Confirm Pop-Ups: Scene Load is turned OFF, and Show Control is set to Cues.
+
 NOTE: The resulting files have only been tested to load successfully on a console running firmware 3.07 and later.
