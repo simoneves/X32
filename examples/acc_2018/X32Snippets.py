@@ -247,6 +247,7 @@ if __name__ == "__main__":
         try:
             # this could be more robust
             # also does not handle cues of form X.Y.Z or X.Y where Y > 9
+            #print 'DEBUG: extracting cue number from "' + cue + '"'
             cue_number = str(int(round(float(cue) * 100.0)))
         except:
             print 'ERROR: Found invalid cue number at row ' + str(row_index + 1)

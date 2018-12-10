@@ -1,0 +1,34 @@
+#2.6#
+show "ACC" 0 0 0 0 0 0 0 0 0 0 "X32-Edit 3.00"
+cue/000 100 "PRE" 0 -1 0 0 1 0 0
+cue/001 110 "Scene 1" 0 -1 1 0 1 0 0
+cue/002 200 "Scene 2" 0 -1 2 0 1 0 0
+cue/003 300 "Scrooge & Fred" 0 -1 3 0 1 0 0
+cue/004 400 "Jonathan" 0 -1 4 0 1 0 0
+cue/005 500 "Marley enters" 0 -1 5 0 1 0 0
+cue/006 600 "Scene 4" 0 -1 6 0 1 0 0
+cue/007 700 "Scene 7" 0 -1 7 0 1 0 0
+cue/008 710 "A Place Called Home" 0 -1 8 0 1 0 0
+cue/009 800 "Scene 9" 0 -1 9 0 1 0 0
+cue/010 900 "Fred's Family" 0 -1 10 0 1 0 0
+cue/011 1000 "Graveyard" 0 -1 11 0 1 0 0
+cue/012 1010 "Angels" 0 -1 12 0 1 0 0
+cue/013 1100 "Scene 12" 0 -1 13 0 1 0 0
+cue/014 1200 "Hear the bells" 0 -1 14 0 1 0 0
+cue/015 1300 "END" 0 -1 15 0 1 0 0
+snippet/000 "PRE" 0 0 0 0 1
+snippet/001 "Scene 1" 0 0 0 0 1
+snippet/002 "Scene 2" 0 0 0 0 1
+snippet/003 "Scrooge & Fred" 0 0 0 0 1
+snippet/004 "Jonathan" 0 0 0 0 1
+snippet/005 "Marley enters" 0 0 0 0 1
+snippet/006 "Scene 4" 0 0 0 0 1
+snippet/007 "Scene 7" 0 0 0 0 1
+snippet/008 "A Place Called Home" 0 0 0 0 1
+snippet/009 "Scene 9" 0 0 0 0 1
+snippet/010 "Fred's Family" 0 0 0 0 1
+snippet/011 "Graveyard" 0 0 0 0 1
+snippet/012 "Angels" 0 0 0 0 1
+snippet/013 "Scene 12" 0 0 0 0 1
+snippet/014 "Hear the bells" 0 0 0 0 1
+snippet/015 "END" 0 0 0 0 1
