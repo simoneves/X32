@@ -5,7 +5,7 @@
 # X32 Snippets
 #
 # Last mod:
-# October 25, 2018
+# January 22, 2022
 #
 # Written by:
 # Simon Eves (simon@eves.us)
@@ -19,7 +19,7 @@
 #
 ################################################################################
 
-VERSION = "1.9.1" # with parameters for STC ACC 2018
+VERSION = "2.0" # port to Python 3
 
 ################################################################################
 # Imports
@@ -41,13 +41,13 @@ SHEET_NAME                 = 'Sheet1' # spreadsheet sub-sheet name containing al
 
 SKIP_ROWS                  = 4     # number of spreadsheet rows to skip before extracting data
 
-CUE_NUM_COL                = 1     # spreadsheet column of cue number data (can be integer or tenths, e.g. "1" or "1.1")
-CUE_LABEL_COL              = 2     # spreadsheet column of cue data (any short string)
+CUE_NUM_COL                = 2     # spreadsheet column of cue number data (can be integer or tenths, e.g. "1" or "1.1")
+CUE_LABEL_COL              = 3     # spreadsheet column of cue data (any short string)
 
 PATH_NUM_ROW               = 1     # row containing path (chan, bus, aux) numbers
 
-FIRST_CHAN_COL             = 5     # spreadsheet column of data for that first channel
-NUM_CHANS                  = 16    # number of contiguous set of channels
+FIRST_CHAN_COL             = 15    # spreadsheet column of data for that first channel
+NUM_CHANS                  = 19    # number of contiguous set of channels
 
 FIRST_BUS_COL              = 0     # spreadsheet column of data for that first bus
 NUM_BUSES                  = 0     # number of contiguous set of buses (4 = FX1-4)
@@ -55,7 +55,7 @@ NUM_BUSES                  = 0     # number of contiguous set of buses (4 = FX1-
 FIRST_AUXIN_COL            = 0     # spreadsheet column of data for that first auxin
 NUM_AUXINS                 = 0     # number of contiguous set of auxins (2 = AuxIn 5-6)
 
-FIRST_DCA_COL              = 22    # spreadsheet column of data for first DCA
+FIRST_DCA_COL              = 5     # spreadsheet column of data for first DCA
 NUM_DCAS                   = 8     # number of DCAs
 DCA_COLOR                  = 'WH'  # color for active DCA labels
 
@@ -72,7 +72,7 @@ DCA_ACTIVE_ON_NEXT_CUE_COLOR = 'RD'  # that color
 DCA_SAME_ON_NEXT_CUE       = False # alternative color for DCAs that stay the same on the next cue
 DCA_SAME_ON_NEXT_CUE_COLOR = 'GN'  # that color
 
-FX_UNMUTE                  = True  # negative path DCA indexes mean also un-mute that path's FX send to the bus below
+FX_UNMUTE                  = False # negative path DCA indexes mean also un-mute that path's FX send to the bus below
 FX_UNMUTE_BUS              = 13    # set the send from the paths to this single FX bus
 
 OTHER_MUTES                = False # mute one or more band channel per cue, all others will be unmuted (e.g. for switching basses)
@@ -90,13 +90,20 @@ def read_cell_as_string(d, r, c):
     # incoming indices are 1-based
 
     try:
+        #print("DEBUG: Accessing row " + str(r) + ", cell " + str(c))
         row = d[r - 1]
         cell = row[c - 1]
-        #print "DEBUG: cell " + str(r) + "/" + str(c) + " is type " + str(type(cell))
-        if type(cell) == unicode:
-            cell = cell.encode('utf-8')
-        return str(cell)
+        #print("DEBUG: row " + str(r) + ", cell " + str(c) + " is type " + str(type(cell)))
+        #if type(cell) == unicode:
+        #    print("DEBUG:  unicode")
+        #    cell = cell.encode('utf-8')
+        #else:
+        #    print("DEBUG:  not unicode")
+        s = str(cell)
+        #print("DEBUG: '" + s + "'")
+        return s
     except:
+        #print("DEBUG: Exception!")
         return ''
 
 def string_to_int(s):
@@ -189,17 +196,17 @@ def current_or_previous_channel_name(ods, row_index, col):
 if __name__ == "__main__":
 
     title = '# X32 Snippets v' + VERSION
-    print '#' * len(title)
-    print title
-    print '#' * len(title)
+    print('#' * len(title))
+    print(title)
+    print('#' * len(title))
     
     #
     # validate command-line parameters
     #
     
     if len(sys.argv) != 3:
-        print "";
-        print "Usage: X32Snippets.py <ods_file_name> <show_name>"
+        print("");
+        print("Usage: X32Snippets.py <ods_file_name> <show_name>")
         sys.exit(0)
         
     #
@@ -214,7 +221,7 @@ if __name__ == "__main__":
     #
     
     # report
-    print "Opening spreadsheet..."
+    print("Opening spreadsheet...")
     
     # read the file
     ods = get_data(ods_file_name)[SHEET_NAME]
@@ -226,7 +233,7 @@ if __name__ == "__main__":
     cue_labels = []
     
     # report
-    print "Creating cues..."
+    print("Creating cues...")
     
     # iterate rows until the end
     for row_index in range(SKIP_ROWS + 1, len(ods)):
@@ -236,10 +243,12 @@ if __name__ == "__main__":
         
         # skip rows with no cue
         if cue == '':
+            print("DEBUG: Skipping row " + str(row_index) + " with no cue")
             continue
             
         # the end?
         if cue == 'END':
+            print("DEBUG: Found END, stopping")
             break
             
         # get cue number
@@ -249,14 +258,14 @@ if __name__ == "__main__":
             # also does not handle cues of form X.Y.Z or X.Y where Y > 9
             cue_number = str(int(round(float(cue) * 100.0)))
         except:
-            print 'ERROR: Found invalid cue number at row ' + str(row_index + 1)
+            print("ERROR: Found invalid cue number at row " + str(row_index + 1))
             sys.exit()
             
         # get cue label
         cue_label = read_cell_as_string(ods, row_index, CUE_LABEL_COL)
         
         # report snippet
-        print 'Generating new cue "' + cue + '", label "' + cue_label + '"'
+        print('Generating new cue "' + cue + '", label "' + cue_label + '"')
             
         # open snippet file
         snp_file = open(show_name + '.' + str(snp_index).zfill(3) + '.snp', 'w')
@@ -346,7 +355,7 @@ if __name__ == "__main__":
     #
     
     # report
-    print 'Creating show file...'
+    print('Creating show file...')
     
     # open show file
     shw_file = open(show_name + '.shw', 'w')
@@ -356,7 +365,7 @@ if __name__ == "__main__":
     shw_file.write('show "' + show_name +'" 0 0 0 0 0 0 0 0 0 0 "X32-Edit 3.00"\n')
     
     # report
-    print 'Writing cues...'
+    print('Writing cues...')
     
     # write cues
     cue_index = 0
@@ -365,7 +374,7 @@ if __name__ == "__main__":
         cue_index = cue_index + 1
     
     # report
-    print 'Writing snippets...'
+    print('Writing snippets...')
     
     # write snippet refs
     snp_index = 0
@@ -377,4 +386,4 @@ if __name__ == "__main__":
     shw_file.close()
     
     # all done
-    print 'Done!'
+    print('Done!')
