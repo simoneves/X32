@@ -1,6 +1,4 @@
-#2.1# "22" 0 0 0 0 0
-/ch/02/mix/on OFF
-/ch/03/mix/on OFF
+#2.1# "21" 0 0 0 0 0
 /ch/05/mix/on OFF
 /ch/06/mix/on OFF
 /ch/11/mix/on OFF
@@ -10,8 +8,8 @@
 /ch/17/mix/on OFF
 /ch/19/mix/on OFF
 /ch/01/grp/dca 8
-/ch/02/grp/dca 0
-/ch/03/grp/dca 0
+/ch/02/grp/dca 1
+/ch/03/grp/dca 2
 /ch/04/grp/dca 4
 /ch/05/grp/dca 0
 /ch/06/grp/dca 0
@@ -29,6 +27,8 @@
 /ch/18/grp/dca 128
 /ch/19/grp/dca 0
 /ch/01/mix/on ON
+/ch/02/mix/on ON
+/ch/03/mix/on ON
 /ch/04/mix/on ON
 /ch/07/mix/on ON
 /ch/08/mix/on ON
@@ -56,10 +56,10 @@
 /ch/17/mix/15 OFF
 /ch/18/mix/15 OFF
 /ch/19/mix/15 OFF
-/dca/1/config/name ""
-/dca/1/config/color OFF
-/dca/2/config/name ""
-/dca/2/config/color OFF
+/dca/1/config/name "Walker"
+/dca/1/config/color WH
+/dca/2/config/name "Mrs"
+/dca/2/config/color WH
 /dca/3/config/name "Kevin"
 /dca/3/config/color WH
 /dca/4/config/name "Tommy"
@@ -70,5 +70,5 @@
 /dca/6/config/color OFF
 /dca/7/config/name ""
 /dca/7/config/color OFF
-/dca/8/config/name "Guards"
+/dca/8/config/name "L&L"
 /dca/8/config/color WH

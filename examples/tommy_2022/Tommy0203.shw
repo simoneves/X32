@@ -1,64 +1,66 @@
 #2.6#
 show "Tommy0203" 0 0 0 0 0 0 0 0 0 0 "X32-Edit 3.00"
-cue/000 100 "Prologue" 0 -1 0 0 1 0 0
-cue/001 200 "S1" 0 -1 1 0 1 0 0
-cue/002 300 "S2" 0 -1 2 0 1 0 0
-cue/003 400 "Boy Part 2" 0 -1 3 0 1 0 0
-cue/004 500 "S3" 0 -1 4 0 1 0 0
-cue/005 550 "Reverb" 0 -1 5 0 1 0 0
-cue/006 600 "S4" 0 -1 6 0 1 0 0
-cue/007 650 "Reverb" 0 -1 7 0 1 0 0
-cue/008 700 "S5" 0 -1 8 0 1 0 0
-cue/009 800 "S6" 0 -1 9 0 1 0 0
-cue/010 900 "S7" 0 -1 10 0 1 0 0
-cue/011 1000 "S8" 0 -1 11 0 1 0 0
-cue/012 1100 "Sensation" 0 -1 12 0 1 0 0
-cue/013 1150 "S9" 0 -1 13 0 1 0 0
-cue/014 1200 "S10/11" 0 -1 14 0 1 0 0
-cue/015 1300 "S12" 0 -1 15 0 1 0 0
-cue/016 1400 "INT" 0 -1 16 0 1 0 0
-cue/017 1500 "Underture" 0 -1 17 0 1 0 0
-cue/018 1600 "S13" 0 -1 18 0 1 0 0
-cue/019 1700 "S14" 0 -1 19 0 1 0 0
-cue/020 1800 "S15" 0 -1 20 0 1 0 0
-cue/021 1900 "S16" 0 -1 21 0 1 0 0
-cue/022 2000 "S17" 0 -1 22 0 1 0 0
-cue/023 2100 "Sens Rep" 0 -1 23 0 1 0 0
-cue/024 2200 "Free" 0 -1 24 0 1 0 0
-cue/025 2300 "S18" 0 -1 25 0 1 0 0
-cue/026 2400 "S19" 0 -1 26 0 1 0 0
-cue/027 2500 "S20" 0 -1 27 0 1 0 0
-cue/028 2600 "Take It" 0 -1 28 0 1 0 0
-cue/029 2700 "Finale" 0 -1 29 0 1 0 0
-cue/030 2800 "END" 0 -1 30 0 1 0 0
-snippet/000 "Prologue" 0 0 0 0 1
-snippet/001 "S1" 0 0 0 0 1
-snippet/002 "S2" 0 0 0 0 1
-snippet/003 "Boy Part 2" 0 0 0 0 1
-snippet/004 "S3" 0 0 0 0 1
-snippet/005 "Reverb" 0 0 0 0 1
-snippet/006 "S4" 0 0 0 0 1
-snippet/007 "Reverb" 0 0 0 0 1
-snippet/008 "S5" 0 0 0 0 1
-snippet/009 "S6" 0 0 0 0 1
-snippet/010 "S7" 0 0 0 0 1
-snippet/011 "S8" 0 0 0 0 1
-snippet/012 "Sensation" 0 0 0 0 1
-snippet/013 "S9" 0 0 0 0 1
-snippet/014 "S10/11" 0 0 0 0 1
-snippet/015 "S12" 0 0 0 0 1
-snippet/016 "INT" 0 0 0 0 1
-snippet/017 "Underture" 0 0 0 0 1
-snippet/018 "S13" 0 0 0 0 1
-snippet/019 "S14" 0 0 0 0 1
-snippet/020 "S15" 0 0 0 0 1
-snippet/021 "S16" 0 0 0 0 1
-snippet/022 "S17" 0 0 0 0 1
-snippet/023 "Sens Rep" 0 0 0 0 1
-snippet/024 "Free" 0 0 0 0 1
-snippet/025 "S18" 0 0 0 0 1
-snippet/026 "S19" 0 0 0 0 1
-snippet/027 "S20" 0 0 0 0 1
-snippet/028 "Take It" 0 0 0 0 1
-snippet/029 "Finale" 0 0 0 0 1
-snippet/030 "END" 0 0 0 0 1
+cue/000 0 "PRE" 0 -1 0 0 1 0 0
+cue/001 100 "Prologue" 0 -1 1 0 1 0 0
+cue/002 200 "S1" 0 -1 2 0 1 0 0
+cue/003 300 "S2" 0 -1 3 0 1 0 0
+cue/004 400 "Boy Part 2" 0 -1 4 0 1 0 0
+cue/005 500 "S3" 0 -1 5 0 1 0 0
+cue/006 550 "Reverb" 0 -1 6 0 1 0 0
+cue/007 600 "S4" 0 -1 7 0 1 0 0
+cue/008 650 "Reverb" 0 -1 8 0 1 0 0
+cue/009 700 "S5" 0 -1 9 0 1 0 0
+cue/010 800 "S6" 0 -1 10 0 1 0 0
+cue/011 900 "S7" 0 -1 11 0 1 0 0
+cue/012 1000 "S8" 0 -1 12 0 1 0 0
+cue/013 1100 "Sensation" 0 -1 13 0 1 0 0
+cue/014 1150 "S9" 0 -1 14 0 1 0 0
+cue/015 1200 "S10/11" 0 -1 15 0 1 0 0
+cue/016 1300 "S12" 0 -1 16 0 1 0 0
+cue/017 1400 "INT" 0 -1 17 0 1 0 0
+cue/018 1500 "Underture" 0 -1 18 0 1 0 0
+cue/019 1600 "S13" 0 -1 19 0 1 0 0
+cue/020 1700 "S14" 0 -1 20 0 1 0 0
+cue/021 1800 "S15" 0 -1 21 0 1 0 0
+cue/022 1900 "S16" 0 -1 22 0 1 0 0
+cue/023 2000 "S17" 0 -1 23 0 1 0 0
+cue/024 2100 "Sens Rep" 0 -1 24 0 1 0 0
+cue/025 2200 "Free" 0 -1 25 0 1 0 0
+cue/026 2300 "S18" 0 -1 26 0 1 0 0
+cue/027 2400 "S19" 0 -1 27 0 1 0 0
+cue/028 2500 "S20" 0 -1 28 0 1 0 0
+cue/029 2600 "Take It" 0 -1 29 0 1 0 0
+cue/030 2700 "Finale" 0 -1 30 0 1 0 0
+cue/031 2800 "END" 0 -1 31 0 1 0 0
+snippet/000 "PRE" 0 0 0 0 1
+snippet/001 "Prologue" 0 0 0 0 1
+snippet/002 "S1" 0 0 0 0 1
+snippet/003 "S2" 0 0 0 0 1
+snippet/004 "Boy Part 2" 0 0 0 0 1
+snippet/005 "S3" 0 0 0 0 1
+snippet/006 "Reverb" 0 0 0 0 1
+snippet/007 "S4" 0 0 0 0 1
+snippet/008 "Reverb" 0 0 0 0 1
+snippet/009 "S5" 0 0 0 0 1
+snippet/010 "S6" 0 0 0 0 1
+snippet/011 "S7" 0 0 0 0 1
+snippet/012 "S8" 0 0 0 0 1
+snippet/013 "Sensation" 0 0 0 0 1
+snippet/014 "S9" 0 0 0 0 1
+snippet/015 "S10/11" 0 0 0 0 1
+snippet/016 "S12" 0 0 0 0 1
+snippet/017 "INT" 0 0 0 0 1
+snippet/018 "Underture" 0 0 0 0 1
+snippet/019 "S13" 0 0 0 0 1
+snippet/020 "S14" 0 0 0 0 1
+snippet/021 "S15" 0 0 0 0 1
+snippet/022 "S16" 0 0 0 0 1
+snippet/023 "S17" 0 0 0 0 1
+snippet/024 "Sens Rep" 0 0 0 0 1
+snippet/025 "Free" 0 0 0 0 1
+snippet/026 "S18" 0 0 0 0 1
+snippet/027 "S19" 0 0 0 0 1
+snippet/028 "S20" 0 0 0 0 1
+snippet/029 "Take It" 0 0 0 0 1
+snippet/030 "Finale" 0 0 0 0 1
+snippet/031 "END" 0 0 0 0 1
